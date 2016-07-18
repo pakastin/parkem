@@ -121,11 +121,19 @@ export class Car {
     this.trailer.render();
   }
   turnRight () {
-    this.dir += 1;
+    if (this.dir < 0) {
+      this.dir += 2;
+    } else {
+      this.dir += 1;
+    }
     this.turn();
   }
   turnLeft () {
-    this.dir -= 1;
+    if (this.dir > 0) {
+      this.dir -= 2;
+    } else {
+      this.dir -= 1;
+    }
     this.turn();
   }
 }

@@ -450,11 +450,19 @@
     this.trailer.render();
   };
   Car.prototype.turnRight = function turnRight () {
-    this.dir += 1;
+    if (this.dir < 0) {
+      this.dir += 2;
+    } else {
+      this.dir += 1;
+    }
     this.turn();
   };
   Car.prototype.turnLeft = function turnLeft () {
-    this.dir -= 1;
+    if (this.dir > 0) {
+      this.dir -= 2;
+    } else {
+      this.dir -= 1;
+    }
     this.turn();
   };
 
