@@ -1,0 +1,74 @@
+body {
+  background-color: #eee;
+  overflow: hidden;
+}
+canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+car {
+  position: absolute;
+}
+car > graphic {
+  position: absolute;
+  display: block;
+  background-color: #f44336;
+  transform: translate(-50%, -50%);
+  border-radius: 0.25rem;
+}
+car > graphic windshield {
+  display: block;
+  position: absolute;
+  top: 25%;
+  left: 7.5%;
+  width: 85%;
+  height: 22.5%;
+  background-color: rgba(0,0,0,0.1);
+  border-radius: 0.125rem;
+}
+car > graphic windshield-back {
+  display: block;
+  position: absolute;
+  top: 75%;
+  left: 7.5%;
+  width: 85%;
+  height: 12.5%;
+  background-color: rgba(0,0,0,0.1);
+  border-radius: 0.125rem;
+}
+wheel {
+  position: absolute;
+  display: block;
+}
+wheel > graphic {
+  position: absolute;
+  display: block;
+  background-color: #333;
+  border-radius: 0.06125rem;
+  transform: translate(-50%, -50%);
+}
+trailer {
+  position: absolute;
+}
+trailer > shaft {
+  position: absolute;
+  display: block;
+  transform: translate(-50%, -50%);
+  background-color: #aaa;
+}
+trailer > graphic {
+  position: absolute;
+  display: block;
+  transform: translate(-50%, -50%);
+  background-color: #ccc;
+  border-radius: 0.125rem;
+}
