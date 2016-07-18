@@ -23,12 +23,35 @@ export class Car {
       this.frontright = el(Wheel, { x: this.width/2, y: 0, ...wheelParams }),
       this.backleft = el(Wheel, { x: -this.width/2, y: wheelbase, ...wheelParams }),
       this.backright = el(Wheel, { x: this.width/2, y: wheelbase, ...wheelParams }),
+      this.trailer = new Trailer(this, { ...trailerParams, y: wheelbase/2 + length / 2 }, trailerWheelParams),
       el('graphic', { style: `width: ${width}rem; height: ${length}rem; top: ${this.wheelbase/2}rem` },
         el('windshield'),
         el('windshield-back')
-      ),
-      this.trailer = new Trailer(this, { ...trailerParams, y: wheelbase/2 + length / 2 }, trailerWheelParams)
+      )
     );
+  }
+  thrust (v) {
+    if (v != null) {
+      this.thrusting = v;
+    }
+    if (this.v > .15) {
+      this.v = .15;
+    } else if (this.v < -.075) {
+      this.v = -.075;
+    }
+  }
+  turn (d) {
+    if (d != null) {
+      this.dir = d * 40;
+    }
+    if (this.dir > 40) {
+      this.dir = 40;
+    }
+    if (this.dir < -40) {
+      this.dir = -40;
+    }
+    this.frontleft.rotate(this.dir);
+    this.frontright.rotate(this.dir);
   }
   accelerate () {
     if (this.v < 0) {
@@ -36,13 +59,14 @@ export class Car {
     } else {
       this.v += .002;
     }
-    if (this.v > .15) {
-      this.v = .15;
-    }
+    this.thrust();
   }
   slowdown () {
+    if (this.thrusting != null) {
+      this.thrusting = null;
+    }
     if (this.v > 0) {
-      this.v -= .002;
+      this.v -= .004;
       if (this.v < 0) {
         this.v = 0;
       }
@@ -59,11 +83,25 @@ export class Car {
     } else {
       this.v -= .001;
     }
-    if (this.v < -.05) {
-      this.v = -.05;
-    }
+    this.thrust();
   }
   render () {
+    if (this.thrusting != null) {
+      if (this.thrusting > 0) {
+        if (this.v < 0) {
+          this.v += this.thrusting * 0.005;
+        } else {
+          this.v += this.thrusting * 0.001;
+        }
+      } else if (this.thrusting < 0) {
+        if (this.v > 0) {
+          this.v += this.thrusting * 0.005;
+        } else {
+          this.v += this.thrusting * 0.001;
+        }
+      }
+      this.thrust();
+    }
     if (this.v === 0) {
       return;
     }
@@ -84,19 +122,11 @@ export class Car {
   }
   turnRight () {
     this.dir += 1;
-    if (this.dir > 40) {
-      this.dir = 40;
-    }
-    this.frontleft.rotate(this.dir);
-    this.frontright.rotate(this.dir);
+    this.turn();
   }
   turnLeft () {
     this.dir -= 1;
-    if (this.dir < -40) {
-      this.dir = -40;
-    }
-    this.frontleft.rotate(this.dir);
-    this.frontright.rotate(this.dir);
+    this.turn();
   }
 }
 

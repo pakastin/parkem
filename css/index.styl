@@ -1,4 +1,10 @@
 
+@import 'nib';
+
+html {
+  text-size-adjust: 100%;
+}
+
 body {
   background-color: #eee;
   overflow: hidden;
@@ -79,5 +85,11 @@ trailer {
     transform: translate(-50%, -50%);
     background-color: #ccc;
     border-radius: .125rem;
+  }
+}
+
+@media (max-width: 640px) {
+  html {
+    font-size: 50%;
   }
 }

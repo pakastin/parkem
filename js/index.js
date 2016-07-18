@@ -49,7 +49,7 @@ function gameLoop () {
   if (keydown[40]) {
     car.brake();
   }
-  if (!keydown[38] && !keydown[40]) {
+  if (car.thrusting == null && !keydown[38] && !keydown[40]) {
     car.slowdown();
   }
   if (keydown[39]) {
@@ -62,70 +62,87 @@ function gameLoop () {
 }
 
 window.addEventListener('resize', onResize);
+window.addEventListener('mousedown', onMousedown);
 window.addEventListener('touchstart', onMousedown);
 
 function onMousedown (e) {
+  e.preventDefault();
+
   var start = {
-    x: e.touches[0].pageX,
-    y: e.touches[0].pageY
+    x: e.touches ? e.touches[0].pageX : e.pageX,
+    y: e.touches ? e.touches[0].pageY : e.pageY
   }
 
+  window.addEventListener('mousemove', onMousemove);
+  window.addEventListener('mouseup', onMouseup);
   window.addEventListener('touchmove', onMousemove);
   window.addEventListener('touchend', onMouseup);
 
   function onMousemove (e) {
     var current = {
-      x: e.touches[0].pageX,
-      y: e.touches[0].pageY
+      x: e.touches ? e.touches[0].pageX : e.pageX,
+      y: e.touches ? e.touches[0].pageY : e.pageY
+    }
+    var delta = {
+      x: current.x - start.x,
+      y: start.y - current.y
     }
 
-    if (current.y < start.y) {
-      keydown[38] = true;
+    if (delta.y > 0) {
+      car.thrust(delta.y / (window.innerHeight / 4));
+    } else if (delta.y < 0) {
+      car.thrust(delta.y / (window.innerHeight / 4));
     } else {
-      keydown[38] = false;
+      car.slowdown();
     }
-    if (current.y > start.y) {
-      keydown[40] = true;
+    if (delta.x < 0) {
+      car.turn(delta.x / (window.innerWidth / 4));
+    } else if (delta.x > 0) {
+      car.turn(delta.x / (window.innerWidth / 4));
     } else {
-      keydown[40] = false;
-    }
-    if (current.x < start.x) {
-      keydown[37] = true;
-    } else {
-      keydown[37] = false;
-    }
-    if (current.x > start.x) {
-      keydown[39] = true;
-    } else {
-      keydown[39] = false;
+      car.dir = 0;
+      car.turn();
     }
   }
 
   function onMouseup () {
+    car.slowdown();
     keydown[37] = keydown[38] = keydown[39] = keydown[40] = false;
+    window.removeEventListener('mousemove', onMousemove);
+    window.removeEventListener('mouseup', onMouseup);
     window.removeEventListener('touchmove', onMousemove);
     window.removeEventListener('touchend', onMouseup);
   }
 }
+
+var rem = 16;
 
 onResize();
 
 function onResize () {
   cx = window.innerWidth / 2;
   cy = window.innerHeight / 2;
+
+  if (cx <= 320) {
+    rem = 8;
+  } else {
+    rem = 16;
+  }
+
   canvas.width = cx * 2;
   canvas.height = cy * 2;
+
   ctx.fillStyle = '#ddd';
 }
 
 function renderLoop () {
   car.render();
-  ctx.fillRect(cx + (car.x - car.width / 2) * 16, cy + car.y * 16, 1, 1);
-  ctx.fillRect(cx + (car.x + car.width / 2) * 16, cy + car.y * 16, 1, 1);
-  ctx.fillRect(cx + (car.x2 - car.width / 2) * 16, cy + car.y2 * 16, 1, 1);
-  ctx.fillRect(cx + (car.x2 + car.width / 2) * 16, cy + car.y2 * 16, 1, 1);
-  ctx.fillRect(cx + (car.trailer.x2 - car.width / 2) * 16, cy + car.trailer.y2 * 16, 1, 1);
-  ctx.fillRect(cx + (car.trailer.x2 + car.width / 2) * 16, cy + car.trailer.y2 * 16, 1, 1);
+  ctx.fillRect(cx + (car.x - car.width / 2) * rem, cy + car.y * rem, 1, 1);
+  ctx.fillRect(cx + (car.x + car.width / 2) * rem, cy + car.y * rem, 1, 1);
+  ctx.fillRect(cx + (car.x2 - car.width / 2) * rem, cy + car.y2 * rem, 1, 1);
+  ctx.fillRect(cx + (car.x2 + car.width / 2) * rem, cy + car.y2 * rem, 1, 1);
+  ctx.fillRect(cx + (car.trailer.x2 - car.width / 2) * rem, cy + car.trailer.y2 * rem, 1, 1);
+  ctx.fillRect(cx + (car.trailer.x2 + car.width / 2) * rem, cy + car.trailer.y2 * rem, 1, 1);
   requestAnimationFrame(renderLoop);
 }
 
