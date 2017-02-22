@@ -34,8 +34,8 @@ export class Car {
     if (v != null) {
       this.thrusting = v;
     }
-    if (this.v > .15) {
-      this.v = .15;
+    if (this.v > .3) {
+      this.v = .3;
     } else if (this.v < -.075) {
       this.v = -.075;
     }

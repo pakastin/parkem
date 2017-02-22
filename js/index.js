@@ -123,7 +123,7 @@ function onResize () {
   cx = window.innerWidth / 2;
   cy = window.innerHeight / 2;
 
-  if (cx <= 320) {
+  if (cx <= 400) {
     rem = 8;
   } else {
     rem = 16;
